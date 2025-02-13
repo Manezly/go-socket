@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Client</title>
+</head>
+<body>
+    <h1>WebSocket Client</h1>
+    <input type="text" id="messageInput" placeholder="Enter message">
+    <button id="sendMessage">Send Message</button>
+    <script>
+        // Get UUID from local storage or generate a new one
+        let uuid = localStorage.getItem('uuid');
+        if (!uuid) {
+            uuid = ''; // Set to empty to generate a new one
+        }
+
+        // Create a new WebSocket connection
+        let websocket = new WebSocket(`ws://localhost:3000/ws?uuid=${uuid}&zones=1001,1003`);
+
+        websocket.onopen = function(event) {
+            console.log("WebSocket is open now.");
+        };
+
+        websocket.onmessage = function(event) {
+            console.log("Message from server: ", event.data);
+            // Store the UUID if received from the server
+            if (!localStorage.getItem('uuid')) {
+                localStorage.setItem('uuid', event.data);
+                console.log("Stored UUID in local storage:", event.data);
+            }
+        };
+
+        websocket.onclose = function(event) {
+            console.log("WebSocket is closed now.");
+        };
+
+        websocket.onerror = function(event) {
+            console.error("WebSocket error observed:", event);
+        };
+
+        // Send message to server
+        document.getElementById("sendMessage").onclick = function() {
+            const message = document.getElementById("messageInput").value;
+            if (message) {
+                websocket.send(message);
+                console.log("Sent message to server:", message);
+                document.getElementById("messageInput").value = ''; // Clear input
+            } else {
+                console.log("Message input is empty.");
+            }
+        };
+    </script>
+</body>
+</html>

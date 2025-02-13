@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Message Sender</title>
+</head>
+<body>
+    <h1>Send Message to Zone</h1>
+    <input type="text" id="zone" placeholder="Enter zone">
+    <input type="text" id="message" placeholder="Enter message">
+    <button id="send">Send Message</button>
+
+    <script>
+        document.getElementById("send").onclick = function() {
+            // const zone = document.getElementById("zone").value;
+            // const message = document.getElementById("message").value;
+            const zone = "1003"; // Hardcoded zone
+const message = "Test message"; // Hardcoded message
+
+            fetch("http://localhost:3000/admin/message", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ zone: zone, message: message })
+            })
+            .then(response => response.text())
+            .then(data => {
+                console.log(data);
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+        };
+    </script>
+</body>
+</html>
